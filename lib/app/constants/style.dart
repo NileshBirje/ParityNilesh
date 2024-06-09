@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class Style {
   static const Color whiteCol = Colors.white;
+  static const Color blackCol = Colors.black;
   static const Color greyCol = Colors.grey;
 
 

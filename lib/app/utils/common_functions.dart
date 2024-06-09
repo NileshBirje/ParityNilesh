@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_application_nilesh/app/constants/style.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 class Func{
   
@@ -33,6 +36,23 @@ class Func{
   void delString() {
     dPrint('Deleting whole data');
     storage.deleteAll();
+  }
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Style.blackCol,
+      textColor: Style.whiteCol,
+      fontSize: 16.0,
+    );
+  }
+
+  String returnDate(DateTime date){
+    String formattedDate = DateFormat('d MMM yyyy').format(date);
+    return formattedDate;
   }
 }
 

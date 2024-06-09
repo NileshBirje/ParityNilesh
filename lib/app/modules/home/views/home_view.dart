@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_nilesh/app/common_widgets/main_card.dart';
+import 'package:flutter_application_nilesh/app/constants/style.dart';
+import 'package:flutter_application_nilesh/app/utils/common_functions.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
@@ -18,8 +20,8 @@ class HomeView extends GetView<HomeController> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('HomeView'),
-          centerTitle: true,
+          title:  Text('Deals',style: Style.regularText.copyWith(color: Style.whiteCol,fontWeight: FontWeight.bold),),
+          // centerTitle: true,*------
           bottom: TabBar(controller: controller.tabCont, tabs: const [
             Tab(
               child: Text('Top'),
@@ -32,7 +34,46 @@ class HomeView extends GetView<HomeController> {
             ),
           ]),
         ),
-        // floatingActionButton: FloatingActionButton(onPressed: () => controller.firstLoad(),),
+        
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: controller.drawerItems.map((item) => ListTile(
+                title: Text(item['title']!),
+                subtitle: Text(item['subtitle']!),
+                onTap: () {
+                  Get.back();// Close the drawer
+                  Func().showToast('${item['title']} clicked');
+                },
+              )).toList()
+           /* 
+          <Widget>[
+           DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            )
+            ..drawerItems.map((item) {
+              return ListTile(
+                title: Text(item['title']!),
+                subtitle: Text(item['subtitle']!),
+                onTap: () {
+                  Navigator.of(context).pop(); // Close the drawer
+                  showToast('${item['title']} clicked');
+                },
+              );
+            }).toList(),
+          ],
+            */
+        ),
+      ),
         body: TabBarView(
           controller: controller.tabCont,
           children: [
@@ -68,7 +109,7 @@ class HomeView extends GetView<HomeController> {
                                   commentCount: controller
                                       .displayTopData[index].commentsCount!
                                       .toString(),
-                                  date: '${DateTime.now()}');
+                                  date: Func().returnDate(DateTime.now()));
                             },
                           ),
                         if(controller.isTopLoadMoreRunning.value)
@@ -120,7 +161,7 @@ class HomeView extends GetView<HomeController> {
                                   commentCount: controller
                                       .displayPopularData[index].commentsCount!
                                       .toString(),
-                                  date: '${DateTime.now()}');
+                                  date: Func().returnDate(DateTime.now()));
                             },
                           ),
                         if(controller.isPopularLoadMoreRunning.value)
@@ -171,7 +212,7 @@ class HomeView extends GetView<HomeController> {
                                   commentCount: controller
                                       .displayFeaturedData[index].commentsCount!
                                       .toString(),
-                                  date: '${DateTime.now()}');
+                                  date: Func().returnDate(DateTime.now()));
                             },
                           ),
                         if(controller.isFeaturedLoadMoreRunning.value)

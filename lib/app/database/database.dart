@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter_application_nilesh/app/utils/common_functions.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter_application_nilesh/app/models/deals_model.dart';
@@ -34,19 +35,24 @@ class DatabaseHelper {
         created_at TEXT,
         created_at_in_millis INTEGER,
         image_medium TEXT,
-        store_name TEXT
+        store TEXT
       )
     ''');
   }
 
-  Future<int> insertDeal(DealsModel deal, int value) async {
+  Future<int> insertDeal(DealsModel deal) async {
     Database db = await database;
-    return await db.insert('deals$value', deal.toJson());
+    try{
+    return await db.insert('deals', deal.toJson());
+  }catch(err){
+Func().dPrint('$err');
+  }
+  return 0;
   }
 
-  Future<List<DealsModel>> getDeals(int value) async {
+  Future<List<DealsModel>> getDeals() async {
     Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('deals$value');
+    final List<Map<String, dynamic>> maps = await db.query('deals');
 
     return List.generate(maps.length, (i) {
       return DealsModel(
@@ -55,7 +61,7 @@ class DatabaseHelper {
         createdAt: maps[i]['created_at'],
         createdAtInMillis: maps[i]['created_at_in_millis'],
         imageMedium: maps[i]['image_medium'],
-        store: Store(name: maps[i]['store_name']),
+        store: Store(name: maps[i]['store']),
       );
     });
   }

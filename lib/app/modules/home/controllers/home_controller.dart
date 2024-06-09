@@ -54,6 +54,13 @@ class HomeController extends GetxController
   List<DealsModel> displayPopularData = [];
   List<DealsModel> displayFeaturedData = [];
 
+  final List<Map<String, String>> drawerItems = [
+    {'title': 'Home', 'subtitle': 'Go to home screen'},
+    {'title': 'Profile', 'subtitle': 'Go to profile screen'},
+    {'title': 'Settings', 'subtitle': 'Go to settings screen'},
+    {'title': 'Help', 'subtitle': 'Go to help screen'},
+  ];
+
   @override
   void onInit() {
     topScroller = ScrollController()..addListener(loadTopMore);
@@ -85,28 +92,58 @@ class HomeController extends GetxController
     super.onClose();
   }
 
-  Future loadCache(int value) async{
-    var cacheRes = await DatabaseHelper().getDeals(value);
-      // await Func().getString('cacheData$value');
+  Future loadDatabaseCache(int value) async {
+    List<DealsModel> cacheRes;
+    try {
+      cacheRes = await DatabaseHelper().getDeals();
+    } catch (_) {
+      cacheRes = [];
+    }
 
-      if(cacheRes.isNotEmpty){
 
-            if (value == 0) {
-          displayTopData = cacheRes;
-          hasTopFirstData.value = displayTopData.isNotEmpty;
-          isTopFirstLoadRunning.value = false;
-        } else if (value == 1) {
-          displayPopularData = cacheRes;
-          hasPopularFirstData.value = displayPopularData.isNotEmpty;
-          isPopularFirstLoadRunning.value = false;
-        } else {
-          displayFeaturedData = cacheRes;
-          hasFeaturedFirstData.value = displayFeaturedData.isNotEmpty;
-          isFeaturedFirstLoadRunning.value = false;
-        }
-
+    if (cacheRes.length != 0) {
+      if (value == 0) {
+        displayTopData = cacheRes;
+        hasTopFirstData.value = displayTopData.isNotEmpty;
+        isTopFirstLoadRunning.value = false;
+      } else if (value == 1) {
+        displayPopularData = cacheRes;
+        hasPopularFirstData.value = displayPopularData.isNotEmpty;
+        isPopularFirstLoadRunning.value = false;
+      } else {
+        displayFeaturedData = cacheRes;
+        hasFeaturedFirstData.value = displayFeaturedData.isNotEmpty;
+        isFeaturedFirstLoadRunning.value = false;
       }
+    }
   }
+
+  Future loadCache(int value) async {
+
+    var cache = await Func().getString('cacheData$value');
+    final cacheData = jsonDecode(cache); //data error for converting json data-- (unexpected character before seo_settings, maybe some illegal character from api response)
+    List<DealsModel>? cacheRes = (cacheData['deals'] as List<dynamic>)
+            .map((e) => DealsModel.fromJson(e))
+            .toList();
+
+
+    if (cacheRes.length != 0) {
+      if (value == 0) {
+        displayTopData = cacheRes;
+        hasTopFirstData.value = displayTopData.isNotEmpty;
+        isTopFirstLoadRunning.value = false;
+      } else if (value == 1) {
+        displayPopularData = cacheRes;
+        hasPopularFirstData.value = displayPopularData.isNotEmpty;
+        isPopularFirstLoadRunning.value = false;
+      } else {
+        displayFeaturedData = cacheRes;
+        hasFeaturedFirstData.value = displayFeaturedData.isNotEmpty;
+        isFeaturedFirstLoadRunning.value = false;
+      }
+    }
+  }
+
 
   Future firstLoad(int value) async {
     Func().dPrint('running api');
@@ -125,19 +162,24 @@ class HomeController extends GetxController
           'http://stagingauth.desidime.com/v4/home/discussed?per_page=10&page=${currentPageFeatured.value}&fields=id.created_at.created_at_in_millis,image_medium,comments_count,store{name} ';
     }
 
-    await loadCache(value);
+    await loadDatabaseCache(value); // for database
+    // await loadCache(value); //from secure storage
 
     await GetData().getData(url).then((resp) {
       if (resp != {}) {
         Func().dPrint("--first load-- ${resp}");
-        
-      Func().setString('cacheData$value', resp.toString());
-    DatabaseHelper().insertDeal(resp as DealsModel,value);
+        Func().setString('cacheData$value', resp.toString());
 
 
         List<DealsModel>? list = (resp['deals'] as List<dynamic>)
             .map((e) => DealsModel.fromJson(e))
             .toList();
+        if (value == 0) {
+        for(int i = 0; i < list.length; i++){
+        DealsModel newDeal = DealsModel(id: list[i].id,commentsCount: list[i].commentsCount,createdAt: list[i].createdAt,createdAtInMillis: list[i].createdAtInMillis,imageMedium: list[i].imageMedium,store: list[i].store);
+        Func().dPrint('--++ ${newDeal}');
+          DatabaseHelper().insertDeal(newDeal);
+        }}
 
         if (value == 0) {
           displayTopData = list ?? [];
@@ -260,6 +302,6 @@ class HomeController extends GetxController
           hasFeaturedNextpage.value = false;
         }
       });
-    } 
+    }
   }
 }

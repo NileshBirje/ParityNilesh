@@ -31,51 +31,58 @@ class _MainCardState extends State<MainCard> {
           Radius.circular(10.r),
         ),
       ),
-      margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.w),
+      margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Row(mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
-                child: CachedNetworkImage(
-                  imageUrl: widget.image,
-                  placeholder: (context, url) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  },
-                  errorWidget: (context, url, error) {
-                    return Container(
-                      width: 30.w,
-                      height: 100.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5.r),
-                        ),
-                      ),
-                      child: const CircularProgressIndicator(),
-                    );
-                  },
-                  imageBuilder: (context, imageProvider) {
-                    return Container(
-                      width: 30.w,
-                      height: 100.h,
-                      decoration: BoxDecoration(
+                flex: 2,
+                child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.image,
+                    placeholder: (context, url) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                    errorWidget: (context, url, error) {
+                      return Container(
+                        width: 30.w,
+                        height: 100.h,
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(
                             Radius.circular(5.r),
                           ),
-                          image: DecorationImage(image: imageProvider)),
-                    );
-                  },
+                        ),
+                        child: const CircularProgressIndicator(),
+                      );
+                    },
+                    imageBuilder: (context, imageProvider) {
+                      return Container(
+                        width: 30.w,
+                        height: 100.h,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5.r),
+                            ),
+                            image: DecorationImage(image: imageProvider)),
+                      );
+                    },
+                  ),
                 ),
               ),
               Expanded(
-                  flex: 5,
-                  child: Text(
-                    widget.title,
-                    style: Style.regularText,
+                  flex: 6,
+                  child: Padding(
+                    padding:  EdgeInsets.only(top: 18.h,left: 10.w),
+                    child: Text(
+                      widget.title,
+                      style: Style.regularText,
+                    ),
                   ))
             ],
           ),
