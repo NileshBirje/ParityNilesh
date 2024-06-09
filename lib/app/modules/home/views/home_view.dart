@@ -54,7 +54,7 @@ class HomeView extends GetView<HomeController> {
                     child: Column(
                         children: [
                           ListView.builder(shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                             itemCount: controller.displayTopData.length,
                             itemBuilder: (context, index) {
                               return MainCard(
@@ -70,7 +70,20 @@ class HomeView extends GetView<HomeController> {
                                       .toString(),
                                   date: '${DateTime.now()}');
                             },
-                          )
+                          ),
+                        if(controller.isTopLoadMoreRunning.value)
+                        const Padding(
+                        padding: EdgeInsets.only(top: 10, bottom: 40),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                      // When nothing else to load
+                    if (controller.hasTopNextpage.value == false)
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10),
+                        child: const Text('end of page'),
+                      ),
                         ],
                       ),
                   ),
@@ -93,7 +106,7 @@ class HomeView extends GetView<HomeController> {
                     child: Column(
                         children: [
                           ListView.builder(shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                             itemCount: controller.displayPopularData.length,
                             itemBuilder: (context, index) {
                               return MainCard(
@@ -109,7 +122,19 @@ class HomeView extends GetView<HomeController> {
                                       .toString(),
                                   date: '${DateTime.now()}');
                             },
-                          )
+                          ),
+                        if(controller.isPopularLoadMoreRunning.value)
+                        const Padding(
+                        padding: EdgeInsets.only(top: 10, bottom: 40),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                      // When nothing else to load
+                    if (controller.hasPopularNextpage.value == false)
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      child: const Text('end of page'),),
                         ],
                       ),
                   ),
@@ -132,7 +157,7 @@ class HomeView extends GetView<HomeController> {
                     child: Column(
                         children: [
                           ListView.builder(shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                             itemCount: controller.displayFeaturedData.length,
                             itemBuilder: (context, index) {
                               return MainCard(
@@ -148,7 +173,19 @@ class HomeView extends GetView<HomeController> {
                                       .toString(),
                                   date: '${DateTime.now()}');
                             },
-                          )
+                          ),
+                        if(controller.isFeaturedLoadMoreRunning.value)
+                        const Padding(
+                        padding: EdgeInsets.only(top: 10, bottom: 40),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                      // When nothing else to load
+                    if (controller.hasFeaturedNextpage.value == false)
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      child: const Text('end of page'),),
                         ],
                       ),
                   ),
